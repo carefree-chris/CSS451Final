@@ -23,12 +23,12 @@ public class NodeLine : MonoBehaviour {
 
     void UpdateLine()
     {
-        float length = (endPt2.localPosition - endPt1.localPosition).magnitude / 2f;
+        float length = (endPt2.position - endPt1.position).magnitude / 2f;
 
-        Vector3 direction = (endPt2.localPosition - endPt1.localPosition);
+        Vector3 direction = (endPt2.position - endPt1.position);
 
         transform.localScale = new Vector3(width, length, width);
-        transform.localPosition = endPt1.localPosition + (direction.normalized * length);
+        transform.position = endPt1.position + (direction.normalized * length);
         transform.up = (direction.normalized);
     }
 	

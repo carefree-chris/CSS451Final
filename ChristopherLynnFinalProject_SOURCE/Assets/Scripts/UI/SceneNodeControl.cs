@@ -5,6 +5,9 @@ using UnityEngine.UI;
 
 public class SceneNodeControl : MonoBehaviour {
 
+
+    public GameObject TestPrimitive = null;
+
     public Color activeColor = Color.blue;
     public Color inactiveColor = Color.red;
 
@@ -136,8 +139,9 @@ public class SceneNodeControl : MonoBehaviour {
             nLine.GetComponent<NodeLine>().SetLineAttributes(mCurrentSelected.transform, nNode.transform, 0.25f);
 
             nNode.line = nLine;
+            nNode.transform.name = "Lvl" + (TheMenu.value + 1) + "Node";
 
-            offsetDirection *= -1f;
+            //offsetDirection *= -1f;
 
             /*Dropdown.OptionData nData = new Dropdown.OptionData(nNode.transform.name);
             mSelectMenuOptions.Add(nData);
@@ -148,9 +152,36 @@ public class SceneNodeControl : MonoBehaviour {
 
             GenerateList();
             //Now, select our new current node
-            Debug.Log(TheMenu.value);
+            nNode.transform.parent = mCurrentSelected.transform;
             SelectionChange(TheMenu.value + 1);
             TheMenu.value += 1;
+
+            
+
+            return true;
+        }
+    }
+
+    //Assumes that the input has the right shader
+    public bool AddPrimitive()
+    {
+        if (mCurrentSelected == null)
+        {
+            return false;
+        }
+        else
+        {
+            AdvancedNodePrimitive primitive = Instantiate(TestPrimitive, nodeContainer.transform).GetComponent<AdvancedNodePrimitive>();
+
+            primitive.transform.name = "Primitive_" + mCurrentSelected.transform.name;
+
+            primitive.gameObject.transform.position = new Vector3(mCurrentSelected.transform.position.x,
+                mCurrentSelected.transform.position.y,
+                mCurrentSelected.transform.position.z);
+
+            Debug.Log("mCurrentSelected: " + mCurrentSelected.name);
+            mCurrentSelected.PrimitiveList.Add(primitive.GetComponent<AdvancedNodePrimitive>());
+            primitive.transform.parent = mCurrentSelected.transform;
             return true;
         }
     }

@@ -8,7 +8,7 @@ public class AdvancedSceneNode : MonoBehaviour {
 
     protected Matrix4x4 mCombinedParentXform;
     
-    public Transform AxisFrame;
+    //public Transform AxisFrame;
     public Vector3 Pivot = Vector3.zero;
     public List<AdvancedNodePrimitive> PrimitiveList;
     public List<AdvancedSceneNode> SceneNodeList;
@@ -20,7 +20,7 @@ public class AdvancedSceneNode : MonoBehaviour {
 
     void Awake()
     {
-        AxisFrame = GameObject.FindGameObjectWithTag("Axis").transform;
+        //AxisFrame = GameObject.FindGameObjectWithTag("Axis").transform;
         UnSelect();
     }
 
@@ -29,7 +29,7 @@ public class AdvancedSceneNode : MonoBehaviour {
 
         
 
-        Debug.Assert(AxisFrame != null);
+        //Debug.Assert(AxisFrame != null);
         InitializeAdvancedSceneNode();
         // Debug.Log("PrimitiveList:" + PrimitiveList.Count);
 	}
@@ -41,11 +41,11 @@ public class AdvancedSceneNode : MonoBehaviour {
     //public void SetToSelect() { AxisFrame.gameObject.SetActive(true); }
     //public void UnSelect() { AxisFrame.gameObject.SetActive(false); }
     public void SetToSelect() {
-        AxisFrame.gameObject.GetComponent<AxisController>().Enable();
+        //AxisFrame.gameObject.GetComponent<AxisController>().Enable();
     }
 
     public void UnSelect() {
-        AxisFrame.gameObject.GetComponent<AxisController>().Disable();
+        //AxisFrame.gameObject.GetComponent<AxisController>().Disable();
     }
 
     private void InitializeAdvancedSceneNode()
@@ -80,9 +80,10 @@ public class AdvancedSceneNode : MonoBehaviour {
         snPivot = mCombinedParentXform.GetColumn(3);
         snUp = c1;
 
-        AxisFrame.transform.localPosition = snPivot;  // our location is Pivot 
+        //We might not need axis at this time?
+        /*AxisFrame.transform.localPosition = snPivot;  // our location is Pivot 
         AxisFrame.transform.localScale = s * kAxisFrameSize;
-        AxisFrame.transform.localRotation = q;
+        AxisFrame.transform.localRotation = q;*/
 
         // propagate to all children
         foreach (AdvancedSceneNode child in SceneNodeList)

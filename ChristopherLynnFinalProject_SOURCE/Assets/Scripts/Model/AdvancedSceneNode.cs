@@ -100,4 +100,37 @@ public class AdvancedSceneNode : MonoBehaviour {
             p.LoadShaderMatrix(ref mCombinedParentXform);
         }
     }
+
+    public void RemoveNode(AdvancedSceneNode toRemove)
+    {
+        if (SceneNodeList.Contains(toRemove))
+        {
+            SceneNodeList.Remove(toRemove);
+        }
+    }
+
+    public void DeleteSelf()
+    {
+        foreach(AdvancedNodePrimitive pToDelete in PrimitiveList)
+        {
+            Destroy(pToDelete.gameObject);
+        }
+
+        PrimitiveList.Clear();
+
+        Debug.Log(SceneNodeList.Count);
+
+        foreach(AdvancedSceneNode sToDelete in SceneNodeList)
+        {
+            sToDelete.DeleteSelf();
+        }
+
+        SceneNodeList.Clear();
+
+        Destroy(line);
+        Destroy(gameObject);
+
+        
+
+    }
 }

@@ -11,12 +11,12 @@ public class Translator : MonoBehaviour {
         TranslateInX,
         TranslateInY,
         TranslateInZ,
-        NoTransalte
+        NoTranslate
     };
     
     private const int kSelectorLayer = 21;
     private const int kSelectorLayerMask = 1 << kSelectorLayer;
-    private TranslateMode mCurrentMode = TranslateMode.NoTransalte;
+    private TranslateMode mCurrentMode = TranslateMode.NoTranslate;
     private Vector3 mInitMousePosition = Vector3.zero;
     private const float kMouseScaleFactor = 0.01f;
 
@@ -47,7 +47,7 @@ public class Translator : MonoBehaviour {
 
     public void ResetSelectMode()
     {
-        mCurrentMode = TranslateMode.NoTransalte;
+        mCurrentMode = TranslateMode.NoTranslate;
         SetChildrenColor();
     }
 
@@ -72,12 +72,12 @@ public class Translator : MonoBehaviour {
             else if (hitName == "AxisZ")
                 mCurrentMode = TranslateMode.TranslateInZ;
             else
-                mCurrentMode = TranslateMode.NoTransalte;
+                mCurrentMode = TranslateMode.NoTranslate;
 
-            if (mCurrentMode != TranslateMode.NoTransalte)
+            if (mCurrentMode != TranslateMode.NoTranslate)
                 hitInfo.transform.GetComponent<Renderer>().material.color = SelectedColor;
         }
-        return (mCurrentMode != TranslateMode.NoTransalte);
+        return (mCurrentMode != TranslateMode.NoTranslate);
     }
 
     public void DragTargetTranslation()
@@ -85,7 +85,7 @@ public class Translator : MonoBehaviour {
         if (mTarget == null)
             return;
 
-        if (mCurrentMode != TranslateMode.NoTransalte)
+        if (mCurrentMode != TranslateMode.NoTranslate)
         {   // this means, one of the translation axis is already selected
             Vector3 delta = kMouseScaleFactor * (Input.mousePosition - mInitMousePosition);
             mInitMousePosition = Input.mousePosition;
@@ -102,7 +102,7 @@ public class Translator : MonoBehaviour {
                     delta.y = delta.x = 0;
                     break;
             }
-            mTarget.localPosition += delta;
+            mTarget.position += delta;
             transform.position = mTarget.position;
         }
     }
@@ -112,5 +112,10 @@ public class Translator : MonoBehaviour {
         transform.FindChild("AxisX").gameObject.GetComponent<Renderer>().material.color = Color.red;
         transform.FindChild("AxisY").gameObject.GetComponent<Renderer>().material.color = Color.green;
         transform.FindChild("AxisZ").gameObject.GetComponent<Renderer>().material.color = Color.blue;
+    }
+
+    public void SetPositionToSelected(Transform target)
+    {
+        transform.position = target.position;
     }
 }

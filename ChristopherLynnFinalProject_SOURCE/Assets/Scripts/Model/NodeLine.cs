@@ -23,6 +23,12 @@ public class NodeLine : MonoBehaviour {
 
     void UpdateLine()
     {
+        if (endPt1 == null || endPt2 == null)
+        {
+            return;
+        }
+            
+
         float length = (endPt2.position - endPt1.position).magnitude / 2f;
 
         Vector3 direction = (endPt2.position - endPt1.position);

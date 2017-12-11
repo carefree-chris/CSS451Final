@@ -18,6 +18,7 @@ public class SceneNodeControl : MonoBehaviour {
     public Dropdown TheMenu = null;
     public AdvancedSceneNode TheRoot = null;
     public XFormControl XformControl = null;
+    public Translator mTranslator = null;
 
     private float nodeInitialOffset = 1f;
     private float offsetDirection = 1f;
@@ -113,6 +114,8 @@ public class SceneNodeControl : MonoBehaviour {
         mCurrentSelected.gameObject.GetComponent<MeshRenderer>().material.color = activeColor;
 
         XformControl.SetSelectedObject(mSelectedTransform[index]);
+
+        //mTranslator.SetPositionToSelected(mCurrentSelected.transform);
     }
 
     public AdvancedSceneNode GetRootNode()
@@ -129,9 +132,9 @@ public class SceneNodeControl : MonoBehaviour {
         {
 
             AdvancedSceneNode nNode = Instantiate(node, nodeContainer.transform).GetComponent<AdvancedSceneNode>();
-            nNode.transform.localPosition = new Vector3(mCurrentSelected.transform.localPosition.x + (nodeInitialOffset * offsetDirection),
-                mCurrentSelected.transform.localPosition.y - nodeInitialOffset,
-                mCurrentSelected.transform.localPosition.z);
+            nNode.transform.position = new Vector3(mCurrentSelected.transform.position.x + (nodeInitialOffset * offsetDirection),
+                mCurrentSelected.transform.position.y - nodeInitialOffset,
+                mCurrentSelected.transform.position.z);
 
             mCurrentSelected.SceneNodeList.Add(nNode);
 
@@ -141,15 +144,15 @@ public class SceneNodeControl : MonoBehaviour {
             nNode.line = nLine;
             nNode.transform.name = "Lvl" + (TheMenu.value + 1) + "Node";
 
-            //offsetDirection *= -1f;
+            offsetDirection *= -1f;
 
             /*Dropdown.OptionData nData = new Dropdown.OptionData(nNode.transform.name);
             mSelectMenuOptions.Add(nData);
             mSelectedTransform.Add(nNode.transform);
             TheMenu.AddOptions(mSelectMenuOptions);*/
 
-           
 
+            
             GenerateList();
             //Now, select our new current node
             nNode.transform.parent = mCurrentSelected.transform;
@@ -157,6 +160,31 @@ public class SceneNodeControl : MonoBehaviour {
             TheMenu.value += 1;
 
             
+
+            return true;
+        }
+    }
+
+    public bool RemoveSelectedNode()
+    {
+        if (mSelectedTransform.IndexOf(mCurrentSelected.transform) == 0)
+        {
+            return false;
+        } else
+        {
+
+            AdvancedSceneNode toDelete = mCurrentSelected;
+
+            
+            int nIndex = mSelectedTransform.IndexOf(mCurrentSelected.transform) - 1;
+            
+
+            toDelete.DeleteSelf();
+            GenerateList();
+            SelectionChange(nIndex);
+            TheMenu.value = nIndex;
+
+            mCurrentSelected.RemoveNode(toDelete);
 
             return true;
         }
@@ -175,14 +203,27 @@ public class SceneNodeControl : MonoBehaviour {
 
             primitive.transform.name = "Primitive_" + mCurrentSelected.transform.name;
 
-            primitive.gameObject.transform.position = new Vector3(mCurrentSelected.transform.position.x,
-                mCurrentSelected.transform.position.y,
-                mCurrentSelected.transform.position.z);
+            primitive.gameObject.transform.position = mCurrentSelected.transform.position;
 
-            Debug.Log("mCurrentSelected: " + mCurrentSelected.name);
+            //Debug.Log();
+            
             mCurrentSelected.PrimitiveList.Add(primitive.GetComponent<AdvancedNodePrimitive>());
             primitive.transform.parent = mCurrentSelected.transform;
             return true;
+        }
+    }
+
+    public bool SwitchSelectedNode(AdvancedSceneNode nNode)
+    {
+        if (mSelectedTransform.Contains(nNode.transform))
+        {
+            //Debug.Log("CONTAINS TIS NODE: " + mSelectedTransform.IndexOf(nNode.transform));
+            SelectionChange(mSelectedTransform.IndexOf(nNode.transform));
+            TheMenu.value = mSelectedTransform.IndexOf(nNode.transform);
+            return true;
+        } else
+        {
+            return false;
         }
     }
 

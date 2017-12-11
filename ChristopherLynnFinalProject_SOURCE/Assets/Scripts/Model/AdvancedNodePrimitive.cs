@@ -42,7 +42,7 @@ public class AdvancedNodePrimitive: MonoBehaviour {
         Matrix4x4 invP = Matrix4x4.TRS(-Pivot, Quaternion.identity, Vector3.one);
         Matrix4x4 trs = Matrix4x4.TRS(transform.localPosition, transform.localRotation, transform.localScale);
         Matrix4x4 m = nodeMatrix * p * trs * invP;
-        GetComponent<Renderer>().sharedMaterial.SetMatrix("MyTRSMatrix", m);
-        GetComponent<Renderer>().sharedMaterial.SetColor("MyColor", MyColor);
+        GetComponent<Renderer>().material.SetMatrix("MyTRSMatrix", m);
+        GetComponent<Renderer>().material.SetColor("MyColor", MyColor);
     }
 }

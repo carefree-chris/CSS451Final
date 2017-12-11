@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class CameraController : MonoBehaviour {
 
+    public int startingCameraIndex = 0;
     [SerializeField] private List<Vector3> camPositions;
     private int camIndex = 0; //The current cam we're looking at.
 
@@ -29,11 +30,15 @@ public class CameraController : MonoBehaviour {
         {
             //Our list of camera positions must be at least 1
             camPositions.Add(cam.transform.position);
+        } else
+        {
+            camIndex = startingCameraIndex -1;
+            SwitchView();
         }
 
 	}
 
-    public void SwitchView()
+    public int SwitchView()
     {
         camIndex++;
 
@@ -49,6 +54,8 @@ public class CameraController : MonoBehaviour {
         cam.transform.position = camPositions[camIndex] + v;
 
         LookAt.transform.localPosition = camPositions[camIndex];
+
+        return camIndex;
     }
 
     // Update is called once per frame

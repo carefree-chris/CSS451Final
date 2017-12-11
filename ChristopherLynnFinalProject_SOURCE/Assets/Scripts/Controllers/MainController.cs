@@ -30,7 +30,7 @@ public class MainController : MonoBehaviour {
 
         Debug.Assert(textMessage != null);
 
-        textMessage.text = "Select a scene node to get started!";
+        textMessage.text = "To start, add a node, and Ctrl-Left Click to move it around!";
     }
 
     void Update()
@@ -38,6 +38,7 @@ public class MainController : MonoBehaviour {
         SelectionSupport();
     }
 	
+    /* Node Stuff (3D Rigging Portion) */
     public void AddNode()
     {
         bool canAddNode = SNCtrl.AddNode();
@@ -67,6 +68,17 @@ public class MainController : MonoBehaviour {
         }
 
 
+    }
+
+    public void RemoveNode()
+    {
+        if (SNCtrl.RemoveSelectedNode())
+        {
+            textMessage.text = "Node deleted!!";
+
+        } else {
+            textMessage.text = "Sorry, you can't delete the root node.";
+        }
     }
 
     // Mouse click selection 
@@ -104,6 +116,11 @@ public class MainController : MonoBehaviour {
                     //Transform t = mModel.SelectAMarker(aRay);
                     Transform t = hit.transform;
                     mTranslator.SetTargetTransform(t);
+
+                    if (t != null && t.tag == "Node")
+                    {
+                        SNCtrl.SwitchSelectedNode(t.gameObject.GetComponent<AdvancedSceneNode>());
+                    }
                 }
             }
             else if (Input.GetMouseButton(0))
@@ -117,8 +134,24 @@ public class MainController : MonoBehaviour {
         }
     }
 
-    /*public GameObject getSelected()
+    /* Misc. Stuff*/
+    public void SwitchView()
     {
-        //return mSelected;
-    }*/
+        int camIndex = camCtrl.SwitchView();
+
+        switch(camIndex)
+        {
+            case 0:
+                textMessage.text = "Switched to 3D Modelling View!";
+                break;
+            case 1:
+                textMessage.text = "Switched to Rigging View!";
+                break;
+            default:
+                break;
+        }
+
+    }
+
+
 }

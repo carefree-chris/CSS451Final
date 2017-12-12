@@ -159,7 +159,7 @@ public class SceneNodeControl : MonoBehaviour {
             SelectionChange(TheMenu.value + 1);
             TheMenu.value += 1;
 
-            
+            nNode.gameObject.layer = 9; //We set our layer to the NodeLLayer
 
             return true;
         }
@@ -209,6 +209,7 @@ public class SceneNodeControl : MonoBehaviour {
             
             mCurrentSelected.PrimitiveList.Add(primitive.GetComponent<AdvancedNodePrimitive>());
             primitive.transform.parent = mCurrentSelected.transform;
+            primitive.gameObject.layer = 10; //We set our layer to the PrimitiveLayer
             return true;
         }
     }

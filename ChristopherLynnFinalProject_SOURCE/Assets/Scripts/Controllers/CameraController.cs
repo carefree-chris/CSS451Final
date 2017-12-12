@@ -32,8 +32,8 @@ public class CameraController : MonoBehaviour {
             camPositions.Add(cam.transform.position);
         } else
         {
-            camIndex = startingCameraIndex -1;
-            SwitchView();
+            //camIndex = startingCameraIndex -1;
+            //SwitchView();
         }
 
 	}

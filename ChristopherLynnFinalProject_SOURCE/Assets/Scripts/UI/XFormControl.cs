@@ -91,9 +91,9 @@ public class XFormControl : MonoBehaviour {
     {
         mSelected = g;
         mPreviousSliderValues = Vector3.zero;
-        if (g != null)
+        if (g != null && ObjectName != null)
             ObjectName.text = "Selected:" + g.name;
-        else
+        else if (ObjectName != null)
             ObjectName.text = "Selected: none";
         ObjectSetUI();
     }

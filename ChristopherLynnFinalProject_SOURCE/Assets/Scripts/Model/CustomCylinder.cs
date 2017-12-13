@@ -12,6 +12,8 @@ public class CustomCylinder : CustomMesh {
     {
         mResolution = 10;
         base.Awake();
+
+        base.initRes = mResolution;
     }
 
     // Use this for initialization
@@ -74,8 +76,11 @@ public class CustomCylinder : CustomMesh {
                 {
                     mMarkers[index].layer = 0; // set to default layer
                     mMarkers[index].GetComponent<Renderer>().material.color = Color.black;
+                    mMarkers[index].GetComponent<SphereCollider>().enabled = false;
                 }
             }
         }
     }
+
+    
 }

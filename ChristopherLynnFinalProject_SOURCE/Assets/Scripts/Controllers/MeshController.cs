@@ -4,6 +4,13 @@ using UnityEngine;
 
 public class MeshController : MonoBehaviour {
 
+    public Material NoTexture = null;
+    public Material BrickTexture = null;
+    public Material EmeraldTexture = null;
+    public Material ScalesTexture = null;
+    public Material CanvasTexture = null;
+
+
     public CustomMesh mTheMesh;
     public CustomCylinder mTheCylinder;
     public CustomCube mTheCube;
@@ -16,6 +23,8 @@ public class MeshController : MonoBehaviour {
     void Start()
     {
         SetSelectMesh();
+
+        SetSelectNone();
     }
 
     //
@@ -47,8 +56,13 @@ public class MeshController : MonoBehaviour {
     //TODO BOX
 
     // operate on selected
-    public void SetSelectionMode(bool on) { mSelected.SetShowMarkers(on); }
-    public Transform SelectAMarker(Ray r) { return mSelected.SelectAMarker(r); }
+    public void SetSelectionMode(bool on) {
+        if (mSelected == null)
+            return; //We may have to fix this.
+        mSelected.SetShowMarkers(on);
+    }
+    public Transform SelectAMarker(Ray r) {
+        return mSelected.SelectAMarker(r); }
 
     // Mesh specific
     public void SetMeshResolution(int n) { mTheMesh.SetResolution(n); }
@@ -71,4 +85,54 @@ public class MeshController : MonoBehaviour {
     {
         return objectAvailable;
     }
+
+    public void SetTextureNoTexture()
+    {
+        if(mSelected != null)
+        {
+            mSelected.GetComponent<Renderer>().material = NoTexture;
+        }
+    }
+
+    public void SetTextureBrickTexture()
+    {
+        if (mSelected != null)
+        {
+            mSelected.GetComponent<Renderer>().material = BrickTexture;
+        }
+    }
+
+    public void SetTextureEmeraldTexture()
+    {
+        if (mSelected != null)
+        {
+            mSelected.GetComponent<Renderer>().material = EmeraldTexture;
+        }
+    }
+
+    public void SetTextureScalesTexture()
+    {
+        if (mSelected != null)
+        {
+            mSelected.GetComponent<Renderer>().material = ScalesTexture;
+        }
+    }
+
+    public void SetTextureCanvasTexture()
+    {
+        if (mSelected != null)
+        {
+            mSelected.GetComponent<Renderer>().material = CanvasTexture;
+        }
+    }
+
+    public void ResetMesh()
+    {
+        if (mSelected != null)
+            mSelected.ResetSelf();
+
+        SetTextureNoTexture();
+    }
+
+
 }

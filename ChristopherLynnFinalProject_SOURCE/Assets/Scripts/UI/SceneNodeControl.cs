@@ -6,8 +6,7 @@ using UnityEngine.UI;
 public class SceneNodeControl : MonoBehaviour {
 
 
-    public GameObject TestPrimitive = null;
-
+    
     public Color activeColor = Color.blue;
     public Color inactiveColor = Color.red;
 
@@ -27,7 +26,9 @@ public class SceneNodeControl : MonoBehaviour {
 
     const string kChildSpace = " ";
     List<Dropdown.OptionData> mSelectMenuOptions = new List<Dropdown.OptionData>();
-    List<Transform> mSelectedTransform = new List<Transform>();    
+    List<Transform> mSelectedTransform = new List<Transform>();
+
+    public PrimitiveControl primCtrl = null;  
 
     // Use this for initialization
     void Start () {
@@ -49,6 +50,8 @@ public class SceneNodeControl : MonoBehaviour {
 
         mCurrentSelected = TheRoot;
         SelectionChange(0);
+
+        primCtrl.InitializeNodeCtrl(TheRoot);
     }
 
     void GenerateList()
@@ -115,6 +118,7 @@ public class SceneNodeControl : MonoBehaviour {
 
         XformControl.SetSelectedObject(mSelectedTransform[index]);
 
+        primCtrl.GenerateList(mCurrentSelected);
         //mTranslator.SetPositionToSelected(mCurrentSelected.transform);
     }
 
@@ -191,7 +195,7 @@ public class SceneNodeControl : MonoBehaviour {
     }
 
     //Assumes that the input has the right shader
-    public bool AddPrimitive()
+    public bool AddPrimitive(GameObject objToAdd)
     {
         if (mCurrentSelected == null)
         {
@@ -199,7 +203,7 @@ public class SceneNodeControl : MonoBehaviour {
         }
         else
         {
-            AdvancedNodePrimitive primitive = Instantiate(TestPrimitive, nodeContainer.transform).GetComponent<AdvancedNodePrimitive>();
+            AdvancedNodePrimitive primitive = Instantiate(objToAdd, nodeContainer.transform).GetComponent<AdvancedNodePrimitive>();
 
             primitive.transform.name = "Primitive_" + mCurrentSelected.transform.name;
 
@@ -210,6 +214,8 @@ public class SceneNodeControl : MonoBehaviour {
             mCurrentSelected.PrimitiveList.Add(primitive.GetComponent<AdvancedNodePrimitive>());
             primitive.transform.parent = mCurrentSelected.transform;
             primitive.gameObject.layer = 10; //We set our layer to the PrimitiveLayer
+
+            primCtrl.GenerateList(mCurrentSelected);
             return true;
         }
     }

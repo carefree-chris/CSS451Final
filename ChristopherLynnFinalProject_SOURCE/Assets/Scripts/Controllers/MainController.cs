@@ -12,6 +12,9 @@ public class MainController : MonoBehaviour {
     public GameObject TheRiggingWorld = null;
     public GameObject TheModellingWorld = null;
 
+    public GameObject View1UI = null;
+    public GameObject View2UI = null;
+
     //Controllers
     public CameraController camCtrl = null;
     public SceneNodeControl SNCtrl = null;
@@ -21,6 +24,9 @@ public class MainController : MonoBehaviour {
     public Translator mTranslator = null;
 
     private Text textMessage;
+
+    //Rigging
+    public Dropdown mCustomPrimitiveSelect;
 
     //3D Modelling
     private MeshController mModellingCtrl;
@@ -76,7 +82,6 @@ public class MainController : MonoBehaviour {
         
         ToggleVerticeManipulation(false);
 
-        mModellingCtrl.SetSelectNone();
         mResControl.gameObject.SetActive(false);
         mCylinderResControl.gameObject.SetActive(false);
         mCylinderRotControl.gameObject.SetActive(false);
@@ -110,9 +115,14 @@ public class MainController : MonoBehaviour {
     public void AddPrimitive()
     {
 
+        if (CustomPrimitives.Count <= 0)
+        {
+            textMessage.text = "In order to add a primitive, you first have to create one! Click on \"Switch View\" and create a primitive for your game.";
+            return;
+        }
         
 
-        bool canAddPrimitive = SNCtrl.AddPrimitive();
+        bool canAddPrimitive = SNCtrl.AddPrimitive(CustomPrimitives[mCustomPrimitiveSelect.value]);
 
         if (canAddPrimitive)
         {
@@ -206,11 +216,24 @@ public class MainController : MonoBehaviour {
                 textMessage.text = "Switched to 3D Modelling View!";
                 TheRiggingWorld.SetActive(false);
                 TheModellingWorld.SetActive(true);
+
+                View1UI.SetActive(true);
+                View2UI.SetActive(false);
                 break;
             case 1:
                 textMessage.text = "Switched to Rigging View!";
                 TheRiggingWorld.SetActive(true);
                 TheModellingWorld.SetActive(false);
+                UpdateCustomPrimitiveDropdown();
+
+                View1UI.SetActive(false);
+                View2UI.SetActive(true);
+
+                QuickFix[] toCorrect = View2UI.GetComponentsInChildren<QuickFix>();
+                foreach(QuickFix itemToCorrect in toCorrect)
+                {
+                    itemToCorrect.FixPosition();
+                }
                 break;
             default:
                 break;
@@ -318,7 +341,90 @@ public class MainController : MonoBehaviour {
 
         if (objToAdd != null && mModellingCtrl.GetObjAvailable())
         {
-            
+            GameObject nObj = Instantiate(objToAdd, Vector3.zero, Quaternion.identity);
+            Destroy(nObj.GetComponent<CustomMesh>());
+
+            foreach(Transform child in nObj.transform)
+            {
+                Debug.Log("Destroying: " + child.name);
+                Destroy(child.gameObject);
+            }
+
+            nObj.transform.position = Vector3.zero;
+            nObj.AddComponent<AdvancedNodePrimitive>();
+
+            switch (nObj.tag)
+            {
+                case "Plane":
+                    nObj.transform.localScale = new Vector3(1f, 1f, 1f);
+                    break;
+                case "Cylinder":
+                    nObj.transform.localScale = new Vector3(1f, 2f, 1f);
+                    break;
+                case "Cube":
+                    nObj.transform.localScale = new Vector3(1f, 1f, 1f); //TODO Set this correctly
+                    break;
+                default:
+                    Debug.Log("ERROR: THIS LINE SHOULD NOT BE REACHED");
+                    break;
+            }
+
+
+            nObj.transform.localScale = new Vector3(1f, 1f, 1f);
+
+            //We need to update the mesh collider, so we can select it properly with our mouse
+            Destroy(nObj.GetComponent<MeshCollider>());
+            nObj.AddComponent<MeshCollider>();
+
+            nObj.name = "Primitive No. " + CustomPrimitives.Count;
+            CustomPrimitives.Add(nObj);
+            nObj.layer = 2; // To no raycast
+            nObj.transform.localScale = new Vector3(1f,1f,1f);
+
+            ResetCurrentObj();
+
+        } else
+        {
+            Debug.Log("Cannot add to list");
+        }
+    }
+
+    private void ResetCurrentObj()
+    {
+        //GameObject objToReset = mModellingCtrl.GetSelected();
+        mModellingCtrl.ResetMesh();
+    }
+
+    private void UpdateCustomPrimitiveDropdown()
+    {
+
+        if (CustomPrimitives.Count <= 0)
+        {
+
+            Dropdown.OptionData noneAvailable = new Dropdown.OptionData();
+            noneAvailable.text = "No Objects Created";
+
+            List<Dropdown.OptionData> empty = new List<Dropdown.OptionData>();
+            empty.Add(noneAvailable);
+
+            mCustomPrimitiveSelect.ClearOptions();
+            mCustomPrimitiveSelect.AddOptions(empty);
+
+        } else
+        {
+            mCustomPrimitiveSelect.ClearOptions();
+            List<Dropdown.OptionData> nData = new List<Dropdown.OptionData>();
+            for (int i = 0; i < CustomPrimitives.Count; i++)
+            {
+                Dropdown.OptionData toAdd = new Dropdown.OptionData();
+                toAdd.text = CustomPrimitives[i].name;
+
+                nData.Add(toAdd);
+
+            }
+
+            mCustomPrimitiveSelect.AddOptions(nData);
+
         }
     }
 
